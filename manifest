@@ -1,0 +1,5 @@
+
+
+source ~/Documents/DevOps/F2_Flask_Api_Container/env_file/env.config
+source ~/Documents/DevOps/F2_Flask_Api_Container/env_file/key.config
+
