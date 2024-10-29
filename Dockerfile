@@ -8,14 +8,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Copier l'application dans le conteneur
-ADD ./F1_Flask_Api /opt/webapp/
-ADD ./F1_Flask_Api/requierements.txt /tmp/requierements.txt
+#ADD ./F1_Flask_Api /opt/webapp/
+#ADD ./F1_Flask_Api/requierements.txt /tmp/requierements.txt
+RUN git clone https://github.com/AinaKIKISAGBE/F1_Flask_Api.git /opt/webapp/
 
 # Définir le répertoire de travail
 WORKDIR /opt/webapp/
 
 # Installer les dépendances Python
-RUN pip install --no-cache-dir -r /tmp/requierements.txt
+RUN pip install --no-cache-dir -r /opt/webapp/requierements.txt
 
 # Ajouter l'utilisateur 'aina' avec sudo
 RUN adduser --disabled-password --gecos "" aina && \
@@ -23,7 +24,7 @@ RUN adduser --disabled-password --gecos "" aina && \
 
 # Configurer Nginx
 RUN rm /etc/nginx/sites-available/default 
-ADD ./F1_Flask_Api/config/nginx/nginx_flask_api /etc/nginx/sites-available/default
+RUN cp /opt/webapp/config/nginx/nginx_flask_api /etc/nginx/sites-available/default
 RUN chown www-data:www-data /etc/nginx/sites-available/default 
 RUN chmod 755 /etc/nginx/sites-available/default 
 RUN rm /etc/nginx/sites-enabled/default  
