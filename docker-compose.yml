@@ -8,8 +8,8 @@ services:
     build: 
       context : . # chemin du repertoire contenant le Dockerfile
       dockerfile: Dockerfile
-    image: f2_docker_container_flask_api_dc:v3
-    container_name: a_web_flask_dc
+    image: f2_docker_container_flask_api:v4
+    container_name: a_web_flask
     ports: 
       - "8080:80"
       - "5000:5000"

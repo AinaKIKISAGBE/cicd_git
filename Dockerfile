@@ -10,7 +10,7 @@ RUN apt-get update && \
 # Copier l'application dans le conteneur
 #ADD ./F1_Flask_Api /opt/webapp/
 #ADD ./F1_Flask_Api/requierements.txt /tmp/requierements.txt
-RUN git clone https://github.com/AinaKIKISAGBE/F1_Flask_Api.git /opt/webapp/
+RUN git clone --branch v2 --single-branch  https://github.com/AinaKIKISAGBE/F1_Flask_Api.git --branch master /opt/webapp/
 
 # Définir le répertoire de travail
 WORKDIR /opt/webapp/
