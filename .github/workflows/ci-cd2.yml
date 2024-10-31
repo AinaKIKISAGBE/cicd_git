@@ -40,10 +40,6 @@ jobs:
       - name: Build Docker image
         run: |
           #docker build -t ghcr.io/${{ github.repository }}/flask_api:latest .
-          #github_repository_name= ${{ github.repository }}
-          #github_repository_name_lowcase= ${ github_repository_name,,}
-          #docker build -t ghcr.io/${github_repository_name_lowcase}/flask_api:latest .
-          #docker build -t ghcr.io/github_repository_name_lowcase/flask_api:latest .
           docker build -t ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest .
           
       
@@ -53,9 +49,9 @@ jobs:
         run: |
           # Exemple de test - remplacer par des tests spécifiques à votre application
           # docker run --rm ghcr.io/${{ github.repository }}/flask_api:latest python -m unittest discover tests/
-          export github_repository_name= ${{ github.repository }}
-          export github_repository_name_lowcase= ${ github_repository_name,,}
-          docker run --rm ghcr.io/${github_repository_name_lowcase}/flask_api:latest python -m unittest discover tests/
+          docker run --rm ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest python -m unittest discover tests/
+
+          
           
 
       
@@ -64,9 +60,8 @@ jobs:
       - name: Push Docker image to GitHub Container Registry
         run: |
           #docker push ghcr.io/${{ github.repository }}/flask_api:latest
-          export github_repository_name= ${{ github.repository }}
-          export github_repository_name_lowcase= ${ github_repository_name,,}
-          docker push ghcr.io/${ github_repository_name_lowcase }/flask_api:latest
+          docker push ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest
+          
   
   # cd: Ce job déploie l'application sur le serveur cible, en supposant que les tests et la construction de l'image se sont bien déroulés.
   deploy:
@@ -93,9 +88,9 @@ jobs:
             # Pull the latest image
             # importer la dernière version de l'image Docker du registre
             # docker pull ghcr.io/${{ github.repository }}/flask_api:latest
-            export github_repository_name= ${{ github.repository }} 
-            export github_repository_name_lowcase= ${ github_repository_name,,}
-            docker pull ghcr.io/${github_repository_name_lowcase}/flask_api:latest
+            docker pull ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest
+            
+            
             
             # Arrête et supprime le conteneur existant
             docker-compose -f /path/to/docker-compose.yml down
