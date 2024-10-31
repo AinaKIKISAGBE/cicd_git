@@ -40,10 +40,10 @@ jobs:
       - name: Build Docker image
         run: |
           #docker build -t ghcr.io/${{ github.repository }}/flask_api:latest .
-          export github_repository_name= ${{ github.repository }}
-          export github_repository_name_lowcase= ${ github_repository_name,,}
+          github_repository_name= ${{ github.repository }}
+          github_repository_name_lowcase= ${ github_repository_name,,}
           #docker build -t ghcr.io/${github_repository_name_lowcase}/flask_api:latest .
-          docker build -t ghcr.io/ github_repository_name_lowcase/flask_api:latest .
+          docker build -t ghcr.io/github_repository_name_lowcase/flask_api:latest .
       
       # Run tests (if there are any test scripts in the repository)
       # Cette étape exécute les tests de l'application dans un conteneur Docker, en utilisant unittest. Les tests sont automatiquement découverts dans le dossier tests/
