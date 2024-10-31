@@ -1,0 +1,88 @@
+name: CI/CD Pipeline
+
+on: # on : permet de Spécifier les événements qui déclenchent ce workflow
+  push:
+    branches:
+      - master4  # Déclenche le pipeline sur des pushes dans la branche main
+  pull_request:
+    branches:
+      - master4 # Déclenche le pipeline sur des pushes dans la branche main
+
+
+# Le workflow a deux jobs principaux : build et deploy
+jobs: 
+  # ci: Ce job exécute les étapes de construction de l'image Docker et de tests.
+  build: 
+    runs-on: ubuntu-latest # Le job s'exécute sur une machine virtuelle avec Ubuntu, qui est l'environnement d'exécution des actions.
+
+    steps:
+      # Checkout the repository
+	    # Cette étape utilise l'action actions/checkout pour cloner le code source du dépôt dans l'environnement de l'action.
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Docker Buildx
+	    # Docker Buildx est un outil permettant de construire des images Docker multiplateformes. Cette action prépare l’environnement Docker pour pouvoir construire des images.
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Log in to GitHub Container Registry (ghcr.io)
+	    # Cette étape connecte l'environnement GitHub Actions au GitHub Container Registry (GHCR) en utilisant le GITHUB_TOKEN. Cela permet de pousser l'image Docker sur le registre.
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build the Docker image
+	    # Cette commande construit l'image Docker à partir du Dockerfile dans le dépôt, et la tague avec latest.
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/flask_api:latest .
+      
+      # Run tests (if there are any test scripts in the repository)
+	    # Cette étape exécute les tests de l'application dans un conteneur Docker, en utilisant unittest. Les tests sont automatiquement découverts dans le dossier tests/
+      - name: Run tests
+        run: |
+          # Exemple de test - remplacer par des tests spécifiques à votre application
+          docker run --rm ghcr.io/${{ github.repository }}/flask_api:latest python -m unittest discover tests/
+
+      # Push the Docker image to GitHub Container Registry
+	    # Si les tests réussissent, cette commande pousse l'image Docker sur GitHub Container Registry avec le tag latest.
+      - name: Push Docker image to GitHub Container Registry
+        run: |
+          docker push ghcr.io/${{ github.repository }}/flask_api:latest
+
+		  
+  # cd: Ce job déploie l'application sur le serveur cible, en supposant que les tests et la construction de l'image se sont bien déroulés.
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # Le job deploy s'exécute uniquement si le job build est terminé avec succès.
+    if: github.ref == 'refs/heads/master4' # Ce job ne s'exécute que si la branche en cours est master4
+
+    steps:
+	    # Cloner le dépôt
+      - name: Checkout repository
+        uses: actions/checkout@v2
+	
+	    # Connexion au Serveur Distant (SSH)
+	    # Utilise appleboy/ssh-action pour se connecter via SSH au serveur cible
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }} # Adresse IP du serveur
+          username: ${{ secrets.SERVER_USER }} # Nom d'utilisateur SSH
+          key: ${{ secrets.SERVER_SSH_KEY }} # Clé SSH pour l’authentification
+		  
+		  # Commandes exécutées sur le serveur distant
+          script: |
+            # Pull the latest image
+			      # importer la dernière version de l'image Docker du registre
+            docker pull ghcr.io/${{ github.repository }}/flask_api:latest
+            
+            # Arrête et supprime le conteneur existant
+            docker-compose -f /path/to/docker-compose.yml down
+            
+            # Relance le conteneur avec la nouvelle image
+            docker-compose -f /path/to/docker-compose.yml up -d
