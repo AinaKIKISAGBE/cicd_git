@@ -47,14 +47,15 @@ jobs:
         run: |
           # Exemple de test - remplacer par des tests spécifiques à votre application
           docker run --rm ghcr.io/${{ github.repository }}/flask_api:latest python -m unittest discover tests/
-	  
+
+      
       # Push the Docker image to GitHub Container Registry
       # Si les tests réussissent, cette commande pousse l'image Docker sur GitHub Container Registry avec le tag latest.
       - name: Push Docker image to GitHub Container Registry
         run: |
           docker push ghcr.io/${{ github.repository }}/flask_api:latest
 
-		  
+  
   # cd: Ce job déploie l'application sur le serveur cible, en supposant que les tests et la construction de l'image se sont bien déroulés.
   deploy:
     runs-on: ubuntu-latest
@@ -65,7 +66,7 @@ jobs:
       # Cloner le dépôt
       - name: Checkout repository
         uses: actions/checkout@v2
-	
+      
       # Connexion au Serveur Distant (SSH)
       # Utilise appleboy/ssh-action pour se connecter via SSH au serveur cible
       - name: Deploy to Server
@@ -74,11 +75,11 @@ jobs:
           host: ${{ secrets.SERVER_HOST }} # Adresse IP du serveur
           username: ${{ secrets.SERVER_USER }} # Nom d'utilisateur SSH
           key: ${{ secrets.SERVER_SSH_KEY }} # Clé SSH pour l’authentification
-		  
+	  
           # Commandes exécutées sur le serveur distant
           script: |
             # Pull the latest image
-	    # importer la dernière version de l'image Docker du registre
+            # importer la dernière version de l'image Docker du registre
             docker pull ghcr.io/${{ github.repository }}/flask_api:latest
             
             # Arrête et supprime le conteneur existant
