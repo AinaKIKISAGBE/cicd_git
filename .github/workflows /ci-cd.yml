@@ -75,7 +75,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }} # Adresse IP du serveur
           username: ${{ secrets.SERVER_USER }} # Nom d'utilisateur SSH
           key: ${{ secrets.SERVER_SSH_KEY }} # Clé SSH pour l’authentification
-	  
+          
           # Commandes exécutées sur le serveur distant
           script: |
             # Pull the latest image
