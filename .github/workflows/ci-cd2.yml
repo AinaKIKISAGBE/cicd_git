@@ -41,7 +41,19 @@ jobs:
         run: |
           #docker build -t ghcr.io/${{ github.repository }}/flask_api:latest .
           docker build -t ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest .
-          
+
+      # creer un dosier tests 
+      - name: Prepare tests directory and copy files
+        run: |
+          mkdir -p tests
+          cp test_app.py tests/
+        
+      # copier le fichier test.py vers le dossier test 
+      - name: copy file
+        uses: canastro/copy-file-action@master
+        with:
+          source: "test_app.py"
+          target: "tests/test_app.py"
       
       # Run tests (if there are any test scripts in the repository)
       # Cette étape exécute les tests de l'application dans un conteneur Docker, en utilisant unittest. Les tests sont automatiquement découverts dans le dossier tests/
