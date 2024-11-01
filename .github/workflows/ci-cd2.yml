@@ -33,7 +33,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GIT_TOKEN }}
 
       # Build the Docker image
       # Cette commande construit l'image Docker à partir du Dockerfile dans le dépôt, et la tague avec latest.
@@ -84,7 +84,7 @@ jobs:
       - name: Push Docker image to GitHub Container Registry
         run: |
           #docker push ghcr.io/${{ github.repository }}/flask_api:latest
-          echo ${{ secrets.GIT_TOKEN }} | docker login ghcr.io -u AinaKIKISAGBE --password-stdin
+          # echo ${{ secrets.GIT_TOKEN }} | docker login ghcr.io -u AinaKIKISAGBE --password-stdin
           docker push ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest
           
   
