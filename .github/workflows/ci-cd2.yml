@@ -1,5 +1,8 @@
 name: CI/CD Pipeline
 
+env:
+  deploy: false
+  
 on: # on : permet de Spécifier les événements qui déclenchent ce workflow
   push:
     branches:
@@ -122,3 +125,53 @@ jobs:
             
             # Relance le conteneur avec la nouvelle image
             docker-compose -f /path/to/docker-compose.yml up -d
+
+  deploy2:
+    runs-on: ubuntu-latest # Le job s'exécute sur une machine virtuelle avec Ubuntu, qui est l'environnement d'exécution des actions.
+    
+    steps:
+      # Checkout the repository
+      # Cette étape utilise l'action actions/checkout pour cloner le code source du dépôt dans l'environnement de l'action.
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Docker Buildx
+      # Docker Buildx est un outil permettant de construire des images Docker multiplateformes. Cette action prépare l’environnement Docker pour pouvoir construire des images.
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Log in to GitHub Container Registry (ghcr.io)
+      # Cette étape connecte l'environnement GitHub Actions au GitHub Container Registry (GHCR) en utilisant le GITHUB_TOKEN. Cela permet de pousser l'image Docker sur le registre.
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GIT_TOKEN }}
+
+      - name: Login to Heroku Container Registry
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          echo "$HEROKU_API_KEY" | docker login --username=_ --password-stdin registry.heroku.com
+
+      - name: Build Docker image
+        run: |
+          #docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
+          #docker-compose -f /path/to/docker-compose.yml up -d
+          docker-compose up -d --build --force-recreate
+      
+      - name: Push Docker image to Heroku Container Registry
+        run: |
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+
+      - name: Release the application on Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+      
+      - name: Health check
+        run: |
+          sleep 15  # Temps pour permettre au conteneur de démarrer
+          curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
