@@ -137,6 +137,11 @@ jobs:
         uses: actions/checkout@v2
         
       ### ⬇ IMPORTANT PART ⬇ ###
+      - name: Set Heroku stack to container
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          heroku stack:set container --app tta
       
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
