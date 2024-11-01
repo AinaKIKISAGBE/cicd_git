@@ -33,7 +33,7 @@ RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 # EXPOSE 80 5000
 
 # Commande de démarrage
-CMD service nginx start && gunicorn -w 4 -b 0.0.0.0:5000 wsgi 
+CMD service nginx start && gunicorn -w 4 -b 0.0.0.0:$PORT wsgi 
 
 
 
