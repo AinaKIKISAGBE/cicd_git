@@ -45,8 +45,10 @@ jobs:
       # creer un dosier tests 
       - name: Prepare tests directory and copy files
         run: |
-          mkdir -p /opt/webapp/tests
-          cp /opt/webapp/test_app.py /opt/webapp/tests/
+          # mkdir -p /opt/webapp/tests
+          # cp /opt/webapp/test_app.py /opt/webapp/tests/
+          mkdir -p tests
+          cp test_app.py tests/test_app.py
         
       # copier le fichier test.py vers le dossier test 
       # - name: copy file
