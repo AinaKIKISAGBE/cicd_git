@@ -167,13 +167,16 @@ jobs:
         run: |
           docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
 
-      - name: Release the application on Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+      #- name: Release the application on Heroku
+      #  env:
+      #    HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      #  run: |
+      #    heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
       
       - name: Health check
         run: |
           sleep 15  # Temps pour permettre au conteneur de démarrer
-          curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
+          #curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
+          #curl "http://docker" | grep -q "Hello world!"
+          curl "https://apprf-ac7f49cdef46.herokuapp.com/" | grep -q "KIKI-SAGBE"
+          
