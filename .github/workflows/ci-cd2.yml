@@ -47,6 +47,7 @@ jobs:
         run: |
           # mkdir -p /opt/webapp/tests
           # cp /opt/webapp/test_app.py /opt/webapp/tests/
+          ls -a
           mkdir -p tests
           cp test_app.py tests/test_app.py
         
