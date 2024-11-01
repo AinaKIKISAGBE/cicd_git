@@ -143,13 +143,13 @@ jobs:
 
       - name: Build and push Docker image to Heroku
         run: |
-          docker build -t registry.heroku.com/tta/web .
-          docker push registry.heroku.com/tta/web
+          docker build -t registry.heroku.com/ttta/web .
+          docker push registry.heroku.com/ttta/web
 
       - name: Release the image on Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
-          heroku container:release web --app tta
+          heroku container:release web --app ttta
 
           
