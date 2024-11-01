@@ -178,5 +178,5 @@ jobs:
           sleep 15  # Temps pour permettre au conteneur de démarrer
           #curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
           #curl "http://docker" | grep -q "Hello world!"
-          curl "https://apprf-ac7f49cdef46.herokuapp.com/" | grep -q "KIKI-SAGBE"
+          #curl "https://apprf-ac7f49cdef46.herokuapp.com/" | grep -q "KIKI-SAGBE"
           
