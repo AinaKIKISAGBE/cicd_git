@@ -72,7 +72,7 @@ jobs:
           
           # creer et copier un le fichier taes_app.py à l'intérieur du containeur   
           
-          docker exec ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest ls -la /opt/webapp/ 
+          #docker exec ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest ls -la /opt/webapp/ 
           
 
           
