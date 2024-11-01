@@ -68,7 +68,7 @@ jobs:
           # docker run --rm ghcr.io/${{ github.repository }}/flask_api:latest python -m unittest discover /opt/webapp/tests/
 
           # docker run --rm ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest python -m unittest discover /opt/webapp/tests/
-          docker run --rm ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest
+          #docker run --rm ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest
           
           # creer et copier un le fichier taes_app.py à l'intérieur du containeur   
           
