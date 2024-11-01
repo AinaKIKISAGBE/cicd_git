@@ -46,16 +46,16 @@ jobs:
       - name: Prepare tests directory and copy files
         run: |
           mkdir -p /opt/webapp/tests
-          #cp /opt/webapp/test_app.py /opt/webapp/tests/
+          cp /opt/webapp/test_app.py /opt/webapp/tests/
         
       # copier le fichier test.py vers le dossier test 
-      - name: copy file
-        uses: canastro/copy-file-action@master
-        with:
+      # - name: copy file
+        # uses: canastro/copy-file-action@master
+        # with:
           #source: "/opt/webapp/test_app.py"
           #target: "/opt/webapp/tests/test_app.py"
-          source: "test_app.py"
-          target: "/tests/test_app.py"
+          # source: "test_app.py"
+          # target: "/tests/test_app.py"
       
       # Run tests (if there are any test scripts in the repository)
       # Cette étape exécute les tests de l'application dans un conteneur Docker, en utilisant unittest. Les tests sont automatiquement découverts dans le dossier /opt/webapp/tests/
