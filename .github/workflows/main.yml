@@ -127,7 +127,7 @@ jobs:
             # Relance le conteneur avec la nouvelle image
             #> docker-compose -f /path/to/docker-compose.yml up -d
 
-  deploy2:
+  deploy3:
     runs-on: ubuntu-latest
     steps:
       # Check-out your repository.
