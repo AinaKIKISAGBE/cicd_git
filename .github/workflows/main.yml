@@ -2,6 +2,7 @@ name: CI/CD Pipeline
 
 env:
   deploy: false
+  #deploy2: false
   
 on: # on : permet de Spécifier les événements qui déclenchent ce workflow
   push:
@@ -127,56 +128,47 @@ jobs:
             #> docker-compose -f /path/to/docker-compose.yml up -d
 
   deploy2:
-    runs-on: ubuntu-latest # Le job s'exécute sur une machine virtuelle avec Ubuntu, qui est l'environnement d'exécution des actions.
-    
+    runs-on: ubuntu-latest
     steps:
-      # Checkout the repository
-      # Cette étape utilise l'action actions/checkout pour cloner le code source du dépôt dans l'environnement de l'action.
-      - name: Checkout repository
+      # Check-out your repository.
+      - name: Checkout
         uses: actions/checkout@v2
-
-      # Set up Docker Buildx
-      # Docker Buildx est un outil permettant de construire des images Docker multiplateformes. Cette action prépare l’environnement Docker pour pouvoir construire des images.
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      # Log in to GitHub Container Registry (ghcr.io)
-      # Cette étape connecte l'environnement GitHub Actions au GitHub Container Registry (GHCR) en utilisant le GITHUB_TOKEN. Cela permet de pousser l'image Docker sur le registre.
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v1
+        
+      ### ⬇ IMPORTANT PART ⬇ ###
+      
+      - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
+        uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GIT_TOKEN }}
+          # Below you must provide variables for your Heroku app.
 
-      - name: Login to Heroku Container Registry
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          echo "$HEROKU_API_KEY" | docker login --username=_ --password-stdin registry.heroku.com
+          # The email address associated with your Heroku account.
+          # If you don't want to use repository secrets (which is recommended) you can do:
+          # email: my.email@example.com
+          email: ${{ secrets.HEROKU_EMAIL }}
+          
+          # Heroku API key associated with provided user's email.
+          # Api Key is available under your Heroku account settings.
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          
+          # Name of the heroku application to which the build is to be sent.
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
-          #docker-compose -f /path/to/docker-compose.yml up -d
-          #docker-compose up -d --build --force-recreate
-          #docker run -d -p 80:5000 -e PORT=5000 --name webapp alpinehelloworld
-          docker run  -d -p 80:80 -e PORT=80 --name aapp1 registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
-      
-      - name: Push Docker image to Heroku Container Registry
-        run: |
-          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+          # (Optional, default: "./")
+          # Dockerfile directory.
+          # For example, if you have a Dockerfile in the root of your project, leave it as follows:
+          dockerfile_directory: ./
 
-      #- name: Release the application on Heroku
-      #  env:
-      #    HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      #  run: |
-      #    heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
-      
-      - name: Health check
-        run: |
-          sleep 15  # Temps pour permettre au conteneur de démarrer
-          #curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com
-          #curl "http://docker" | grep -q "Hello world!"
-          #curl "https://apprf-ac7f49cdef46.herokuapp.com/" | grep -q "KIKI-SAGBE"
+          # (Optional, default: "Dockerfile")
+          # Dockerfile name.
+          dockerfile_name: Dockerfile
+
+          # (Optional, default: "")
+          # Additional options of docker build command.
+          docker_options: "--no-cache"
+
+          # (Optional, default: "web")
+          # Select the process type for which you want the docker container to be uploaded.
+          # By default, this argument is set to "web".
+          # For more information look at https://devcenter.heroku.com/articles/process-model
+          process_type: web
           
