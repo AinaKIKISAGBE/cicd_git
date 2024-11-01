@@ -48,8 +48,8 @@ jobs:
           # mkdir -p /opt/webapp/tests
           # cp /opt/webapp/test_app.py /opt/webapp/tests/
           ls -a /opt/webapp/
-          mkdir -p tests
-          cp test_app.py tests/test_app.py
+          # mkdir -p tests
+          # cp test_app.py tests/test_app.py
         
       # copier le fichier test.py vers le dossier test 
       # - name: copy file
