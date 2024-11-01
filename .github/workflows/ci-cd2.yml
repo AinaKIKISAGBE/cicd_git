@@ -84,7 +84,7 @@ jobs:
       - name: Push Docker image to GitHub Container Registry
         run: |
           #docker push ghcr.io/${{ github.repository }}/flask_api:latest
-          echo $GITHUB_TOKEN | docker login ghcr.io -u AinaKIKISAGBE --password-stdin
+          echo ${{ secrets.GIT_TOKEN }} | docker login ghcr.io -u AinaKIKISAGBE --password-stdin
           docker push ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')/flask_api:latest
           
   
